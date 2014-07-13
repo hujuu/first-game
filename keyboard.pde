@@ -2,7 +2,7 @@ float x = 0;
 float y = 0;
 float xball, yball;
 float rx, lx;
-int Length = 6;
+int Length = 100;
 int i = 0;
 float[] yplate = new float[Length];
 float[] xplate = new float[Length];
@@ -12,14 +12,12 @@ float[] ymove = new float[Length];
 int objX, objY; 
 int alph;
 int score;
-
+int start;
 
 void setup(){
   size(320, 568);
   smooth();
   noStroke();
-  objX = mouseX;
-  objY = mouseY;
 }
  
 void draw(){ 
@@ -52,15 +50,17 @@ void draw(){
  }
  drawBall();
  for(int i = 0; i < Length - 1; i++){
-   if(yball > yplate[i] + 10 && yball < yplate[i] + 40 && xball > xplate[i] && xball < xplate[i] + 50){
-     y -= 2;
+   if(yball > yplate[i] + 10 && yball < yplate[i] + 40 && xball > xplate[i] && xball < xplate[i] + 80){
+     y -= 5;
      if(yscore[i] == 0){
        score += 1;
      }
-     yscore[i] += 2;
+     yscore[i] -= 10;
    }
  }
- y += 1;
+ if(start == 1){
+   y += 3;
+ }
 }
 
 void drawBall(){
@@ -76,10 +76,9 @@ void drawRect(){
         xplate[i] = random(width - 50);
       }
       yplate[i] = height - ymove[i];
-      rect(xplate[i], yplate[i] + 20, 50, 10);
-      stroke(0);
+      rect(xplate[i], yplate[i] + 20, 80, 10);
       line(xplate[i], yplate[i] + 20 + yscore[i], xplate[i] + 50, yplate[i] + 20 + yscore[i]);
-      ymove[i] += 1;
+      ymove[i] += 2;
       
       if(yplate[i+1] == 0 && yplate[i] < 300){
         yplate[i+1] = 1;
@@ -98,4 +97,5 @@ void drawPoint(){
 
 void mousePressed( ) {
   yplate[i] = 1;
+  start = 1;
 }
