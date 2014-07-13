@@ -1,18 +1,24 @@
 float x = 0;
+float y = 0;
+float xball, yball;
 float rx, lx;
-int Length = 5;
+int Length = 6;
 int i = 0;
-int[] yplate = new int[Length];
+float[] yplate = new float[Length];
 float[] xplate = new float[Length];
-int[] ymove = new int[Length];
+float[] xscore = new float[Length];
+float[] yscore = new float[Length];
+float[] ymove = new float[Length];
 int objX, objY; 
+int alph;
+int score;
 
-void setup() 
-{ 
- size(400, 400);
- smooth();
- 
-  objX = mouseX;    //objX, disXを現在のマウスのx座標で初期化
+
+void setup(){
+  size(320, 568);
+  smooth();
+  noStroke();
+  objX = mouseX;
   objY = mouseY;
 }
  
@@ -25,7 +31,7 @@ void draw(){
    x += rx * 1.05;
    if( rx > 3 ){
     rx = 3;
-   } 
+   }
  }else if( keyPressed && keyCode == LEFT ) {
    lx = lx + 0.2;
    x -= lx * 1.05;
@@ -35,29 +41,47 @@ void draw(){
  }else if( keyPressed == false ){
    rx = rx - 0.2;
    lx = lx - 0.2;
-   if(rx<0){
+   if(rx < 0){
      rx = 0;
    }
-   if(lx<0){
+   if(lx < 0){
      lx = 0;
    }
    x += rx * 0.8;
-   x -= lx * 0.8;
-   
+   x -= lx * 0.8;  
  }
- ellipse( x + width/2, height/2, 20, 20);
+ drawBall();
+ for(int i = 0; i < Length - 1; i++){
+   if(yball > yplate[i] + 10 && yball < yplate[i] + 40 && xball > xplate[i] && xball < xplate[i] + 50){
+     y -= 2;
+     if(yscore[i] == 0){
+       score += 1;
+     }
+     yscore[i] += 2;
+   }
+ }
+ y += 1;
+}
+
+void drawBall(){
+  xball = x + width/2;
+  yball = y;
+  ellipse( xball, yball, 20, 20);
 }
 
 void drawRect(){
   for(int i = 0; i < Length - 1; i++){
     if(yplate[i] > 0){
       if(xplate[i] == 0){
-        xplate[i] = random(400);
+        xplate[i] = random(width - 50);
       }
       yplate[i] = height - ymove[i];
-      rect(xplate[i], yplate[i] - 20, 50, 10);
+      rect(xplate[i], yplate[i] + 20, 50, 10);
+      stroke(0);
+      line(xplate[i], yplate[i] + 20 + yscore[i], xplate[i] + 50, yplate[i] + 20 + yscore[i]);
       ymove[i] += 1;
-      if(yplate[i+1] == 0 && yplate[i] < 200){
+      
+      if(yplate[i+1] == 0 && yplate[i] < 300){
         yplate[i+1] = 1;
       }
     }
@@ -66,8 +90,10 @@ void drawRect(){
 
 void drawPoint(){
   String s = "SCORE";
-  fill(0);
+  alph = 120;
+  fill(0, 0, 0, alph);
   text(s, 200, 30);
+  text(score, 250, 30);
 }
 
 void mousePressed( ) {
