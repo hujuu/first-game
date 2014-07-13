@@ -1,7 +1,14 @@
+import ddf.minim.*;
+
+Minim minim;
+AudioSample kick;
+AudioSample snare;
+
 float x = 0;
 float y = 0;
 float xball, yball;
 float rx, lx;
+float come, r;
 int Length = 100;
 int i = 0;
 float[] yplate = new float[Length];
@@ -9,21 +16,24 @@ float[] xplate = new float[Length];
 float[] xscore = new float[Length];
 float[] yscore = new float[Length];
 float[] ymove = new float[Length];
+float[] col = new float[Length];
+float[] scale = new float[Length];
 int objX, objY; 
 int alph;
-int score;
-int start;
+int score, start, combo;
 
 void setup(){
   size(320, 568);
   smooth();
   noStroke();
+  minim = new Minim(this);
+  kick = minim.loadSample("poli.wav", 2048);
 }
  
 void draw(){ 
   background(255);
-  drawRect();
-  drawPoint();
+  drawRect(); //bar generate
+  drawPoint(); //score count
   if( keyPressed && keyCode == RIGHT ) {
    rx = rx + 0.2; 
    x += rx * 1.05;
@@ -50,44 +60,59 @@ void draw(){
  }
  drawBall();
  for(int i = 0; i < Length - 1; i++){
-   if(yball > yplate[i] + 10 && yball < yplate[i] + 40 && xball > xplate[i] && xball < xplate[i] + 80){
-     y -= 5;
+   if(yball > yplate[i] + 5 && yball < yplate[i] + 20 && xball > xplate[i] && xball < xplate[i] + scale[i]){
+     y -= 7;
      if(yscore[i] == 0){
        score += 1;
+       kick.trigger();
      }
      yscore[i] -= 10;
    }
  }
  if(start == 1){
-   y += 3;
+   y += 4;
  }
 }
 
 void drawBall(){
   xball = x + width/2;
   yball = y;
-  ellipse( xball, yball, 20, 20);
+  r = 30;
+  ellipse( xball, yball, r, r);
 }
 
 void drawRect(){
   for(int i = 0; i < Length - 1; i++){
+    
     if(yplate[i] > 0){
       if(xplate[i] == 0){
-        xplate[i] = random(width - 50);
+        xplate[i] = random(width - 90);
+        col[i] = random(100);
+        scale[i] = random(20, 90);
       }
       yplate[i] = height - ymove[i];
-      rect(xplate[i], yplate[i] + 20, 80, 10);
-      line(xplate[i], yplate[i] + 20 + yscore[i], xplate[i] + 50, yplate[i] + 20 + yscore[i]);
-      ymove[i] += 2;
       
-      if(yplate[i+1] == 0 && yplate[i] < 300){
+      if(col[i] < 50){
+        fill(0, 200, 100);
+        combo = 1;
+      }else if(col[i] >= 50){
+        fill(220, 90, 0);
+        combo = 2;
+      }
+      rect(xplate[i], yplate[i] + 20, scale[i], 10);
+      line(xplate[i], yplate[i] + 20 + yscore[i], xplate[i] + scale[i], yplate[i] + 20 + yscore[i]);
+      ymove[i] += 3;
+      
+      come = random(200, 400);
+      
+      if(yplate[i+1] == 0 && yplate[i] < come){
         yplate[i+1] = 1;
       }
     }
   }
 }
 
-void drawPoint(){
+void drawPoint(){ //score ccount
   String s = "SCORE";
   alph = 120;
   fill(0, 0, 0, alph);
@@ -98,4 +123,11 @@ void drawPoint(){
 void mousePressed( ) {
   yplate[i] = 1;
   start = 1;
+}
+
+void stop() { //sound system shutdown
+  kick.close();
+  minim.stop();
+
+  super.stop();
 }
