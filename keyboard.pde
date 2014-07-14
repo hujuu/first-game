@@ -1,11 +1,13 @@
 import ddf.minim.*;
 
+PImage img;
+
 Minim minim;
 AudioSample kick;
 AudioSample snare;
 
 float x = 0;
-float y = 0;
+float y = 10;
 float xball, yball;
 float rx, lx;
 float come, r;
@@ -18,9 +20,12 @@ float[] yscore = new float[Length];
 float[] ymove = new float[Length];
 float[] col = new float[Length];
 float[] scale = new float[Length];
+int[] combo = new int[Length];
 int objX, objY; 
 int alph;
-int score, start, combo;
+int score, start;
+int myCombo = 0;
+int pcombo = 0;
 
 void setup(){
   size(320, 568);
@@ -29,6 +34,7 @@ void setup(){
   textSize(18);
   minim = new Minim(this);
   kick = minim.loadSample("poli.wav", 2048);
+  img = loadImage("chara.png");
 }
  
 void draw(){ 
@@ -59,13 +65,47 @@ void draw(){
    x += rx * 0.8;
    x -= lx * 0.8;  
  }
+ if(yball > height + r || yball < 10){
+   String g = "GAME OVER";
+   text(g, width/2, height/2);
+   fill(0, 0, 0, alph);
+   rect(0, 0, width, height);
+   start = 0;
+ }
  drawBall();
  for(int i = 0; i < Length - 1; i++){
    if(yball > yplate[i] + 5 && yball < yplate[i] + 20 && xball > xplate[i] && xball < xplate[i] + scale[i]){
      y -= 7;
      if(yscore[i] == 0){
-       score += 1;
-       kick.trigger();
+       myCombo = combo[i];
+       if(myCombo == 0){
+         score += 1;
+         kick.trigger();
+       }else if(myCombo > 0){
+         if(combo[i] == 1){
+           if(myCombo == 1){
+             pcombo += 1;
+             score += sq(pcombo);
+             kick.trigger();
+           }else if(myCombo == 2){
+             myCombo = 2;
+             pcombo = 1;
+             score += 1;
+             kick.trigger();
+           }
+         }else if(combo[i] == 2){
+           if(myCombo == 2){
+             pcombo += 1;
+             score += sq(pcombo);
+             kick.trigger();
+           }else if(myCombo == 1){
+             myCombo = 1;
+             pcombo = 1;
+             score += 1;
+             kick.trigger();
+           }
+         }
+       }
      }
      yscore[i] -= 10;
    }
@@ -79,7 +119,9 @@ void drawBall(){
   xball = x + width/2;
   yball = y;
   r = 30;
-  ellipse( xball, yball, r, r);
+  fill(100);
+  ellipse(xball, yball, r, r);
+  image(img, xball - r, yball - r);
 }
 
 void drawRect(){
@@ -95,10 +137,10 @@ void drawRect(){
       
       if(col[i] < 50){
         fill(0, 200, 100);
-        combo = 1;
+        combo[i] = 1;
       }else if(col[i] >= 50){
         fill(220, 90, 0);
-        combo = 2;
+        combo[i] = 2;
       }
       rect(xplate[i], yplate[i] + 20, scale[i], 10);
       line(xplate[i], yplate[i] + 20 + yscore[i], xplate[i] + scale[i], yplate[i] + 20 + yscore[i]);
@@ -119,6 +161,7 @@ void drawPoint(){ //score ccount
   fill(0, 0, 0, alph);
   text(s, 200, 30);
   text(score, 280, 30);
+  text(myCombo, 110, 110);
 }
 
 void mousePressed( ) {
