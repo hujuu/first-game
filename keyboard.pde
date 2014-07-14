@@ -26,6 +26,7 @@ void setup(){
   size(320, 568);
   smooth();
   noStroke();
+  textSize(18);
   minim = new Minim(this);
   kick = minim.loadSample("poli.wav", 2048);
 }
@@ -117,7 +118,7 @@ void drawPoint(){ //score ccount
   alph = 120;
   fill(0, 0, 0, alph);
   text(s, 200, 30);
-  text(score, 250, 30);
+  text(score, 280, 30);
 }
 
 void mousePressed( ) {
