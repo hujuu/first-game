@@ -26,6 +26,7 @@ int alph;
 int score, start;
 int myCombo = 0;
 int pcombo = 0;
+int preCombo;
 
 void setup(){
   size(320, 568);
@@ -77,12 +78,14 @@ void draw(){
    if(yball > yplate[i] + 5 && yball < yplate[i] + 20 && xball > xplate[i] && xball < xplate[i] + scale[i]){
      y -= 7;
      if(yscore[i] == 0){
-       myCombo = combo[i];
+       preCombo = myCombo;
        if(myCombo == 0){
-         score += 1;
+         pcombo += 1;
+         score += sq(pcombo);
          kick.trigger();
-       }else if(myCombo > 0){
-         if(combo[i] == 1){
+       }
+       myCombo = combo[i];
+         if(preCombo == 1){
            if(myCombo == 1){
              pcombo += 1;
              score += sq(pcombo);
@@ -93,7 +96,7 @@ void draw(){
              score += 1;
              kick.trigger();
            }
-         }else if(combo[i] == 2){
+         }else if(preCombo == 2){
            if(myCombo == 2){
              pcombo += 1;
              score += sq(pcombo);
@@ -104,8 +107,7 @@ void draw(){
              score += 1;
              kick.trigger();
            }
-         }
-       }
+         }    
      }
      yscore[i] -= 10;
    }
@@ -162,6 +164,7 @@ void drawPoint(){ //score ccount
   text(s, 200, 30);
   text(score, 280, 30);
   text(myCombo, 110, 110);
+  text(preCombo, 130, 90);
 }
 
 void mousePressed( ) {
