@@ -43,13 +43,13 @@ void draw(){
   drawRect(); //bar generate
   drawPoint(); //score count
   if( keyPressed && keyCode == RIGHT ) {
-   rx = rx + 0.2; 
+   rx = rx + 0.3; 
    x += rx * 1.05;
    if( rx > 3 ){
     rx = 3;
    }
  }else if( keyPressed && keyCode == LEFT ) {
-   lx = lx + 0.2;
+   lx = lx + 0.3;
    x -= lx * 1.05;
    if( lx > 3 ){
     lx = 3;
@@ -76,7 +76,7 @@ void draw(){
  drawBall();
  for(int i = 0; i < Length - 1; i++){
    if(yball > yplate[i] + 5 && yball < yplate[i] + 20 && xball > xplate[i] && xball < xplate[i] + scale[i]){
-     y -= 7;
+     y -= 9;
      if(yscore[i] == 0){
        preCombo = myCombo;
        if(myCombo == 0){
@@ -113,7 +113,7 @@ void draw(){
    }
  }
  if(start == 1){
-   y += 4;
+   y += 5;
  }
 }
 
@@ -131,9 +131,9 @@ void drawRect(){
     
     if(yplate[i] > 0){
       if(xplate[i] == 0){
-        xplate[i] = random(width - 90);
+        xplate[i] = random(width - 100);
         col[i] = random(100);
-        scale[i] = random(20, 90);
+        scale[i] = random(40, 100);
       }
       yplate[i] = height - ymove[i];
       
@@ -146,7 +146,7 @@ void drawRect(){
       }
       rect(xplate[i], yplate[i] + 20, scale[i], 10);
       line(xplate[i], yplate[i] + 20 + yscore[i], xplate[i] + scale[i], yplate[i] + 20 + yscore[i]);
-      ymove[i] += 3;
+      ymove[i] += 4;
       
       come = random(200, 400);
       
