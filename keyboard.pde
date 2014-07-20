@@ -120,7 +120,6 @@ void drawBall(){
   xball = x + width/2;
   yball = y;
   r = 30;
-  fill(100);
   //ellipse(xball, yball, r, r);
   image(img, xball - r, yball - r);
 }
